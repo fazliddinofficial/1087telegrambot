@@ -1,0 +1,8 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "db", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "server", "run", "dev:db"], "port": 27027 },
+    { "name": "api", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "server", "run", "dev"], "port": 4020 },
+    { "name": "webapp", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "webapp", "run", "dev"], "port": 5180 }
+  ]
+}

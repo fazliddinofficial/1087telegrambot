@@ -1,0 +1,38 @@
+# Bitta serverda boshqa loyihalar bilan to'qnashmasligi uchun nom aniq berilgan.
+name: taxi-balans
+
+services:
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:?MONGO_USER kiritilmagan}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:?MONGO_PASSWORD kiritilmagan}
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MONGO_URI: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/taxi_balans?authSource=admin
+      PORT: 4020
+      UPLOAD_DIR: /data/uploads
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      # Tashqariga faqat Nginx orqali chiqadi.
+      - "127.0.0.1:${PORT:-4020}:4020"
+    volumes:
+      - uploads:/data/uploads
+
+volumes:
+  mongo-data:
+  uploads:

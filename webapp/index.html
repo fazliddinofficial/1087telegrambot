@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Balans</title>
+    <link rel="preconnect" href="https://telegram.org" />
+    <script>
+      // Mavzu Telegram havolasidan darhol olinadi: yuklanish ekrani noto'g'ri rangda chaqnamasligi uchun.
+      (function () {
+        try {
+          var raw = new URLSearchParams(location.hash.slice(1)).get('tgWebAppThemeParams');
+          var hex = raw && JSON.parse(raw).bg_color;
+          if (!/^#[0-9a-f]{6}$/i.test(hex)) return;
+          var n = parseInt(hex.slice(1), 16);
+          var luminance = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
+          document.documentElement.dataset.theme = luminance < 0.5 ? 'dark' : 'light';
+        } catch (e) {}
+      })();
+    </script>
+    <style>
+      /* Asosiy kod yuklanmaguncha ko'rinadigan ekran, shuning uchun hammasi shu faylning ichida. */
+      html { background: #f4f4f0; }
+      html[data-theme='dark'] { background: #0e0f12; }
+      @media (prefers-color-scheme: dark) {
+        html:not([data-theme='light']) { background: #0e0f12; }
+      }
+      body { margin: 0; }
+      .splash {
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 24px;
+        box-sizing: border-box;
+        color: #646873;
+        font: 15px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        text-align: center;
+      }
+      html[data-theme='dark'] .splash { color: #a0a6b1; }
+      @media (prefers-color-scheme: dark) {
+        html:not([data-theme='light']) .splash { color: #a0a6b1; }
+      }
+      .splash-mark {
+        width: 76px;
+        height: 76px;
+        border-radius: 22px;
+        background: repeating-conic-gradient(#ffc629 0 25%, #2b2d34 0 50%) 0 0 / 38px 38px;
+        box-shadow: 0 10px 28px rgb(16 16 10 / 25%), inset 0 0 0 1px rgb(255 255 255 / 12%);
+        /* Belgi tepadan tushadi, shashka esa yo'lda ketayotgandek siljib turadi */
+        animation:
+          splash-drop 640ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards,
+          splash-drive 1.6s linear infinite;
+      }
+      .splash-brand {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .splash-brand strong {
+        color: #16171a;
+        font-size: 40px;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        line-height: 1.05;
+        letter-spacing: 0.02em;
+      }
+      /* Raqamlar birin-ketin tepadan tushadi */
+      .splash-brand i {
+        display: inline-block;
+        font-style: normal;
+        animation: splash-digit 460ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+      }
+      .splash-brand i:nth-child(1) { animation-delay: 200ms; }
+      .splash-brand i:nth-child(2) { animation-delay: 260ms; }
+      .splash-brand i:nth-child(3) { animation-delay: 320ms; }
+      .splash-brand i:nth-child(4) { animation-delay: 380ms; }
+      .splash-brand span {
+        animation: splash-rise 400ms ease-out 520ms backwards;
+      }
+      html[data-theme='dark'] .splash-brand strong { color: #f4f5f6; }
+      @media (prefers-color-scheme: dark) {
+        html:not([data-theme='light']) .splash-brand strong { color: #f4f5f6; }
+      }
+      .splash-bar {
+        position: relative;
+        width: 132px;
+        height: 4px;
+        overflow: hidden;
+        border-radius: 4px;
+        background: rgb(128 128 128 / 22%);
+        animation: splash-rise 400ms ease-out 620ms backwards;
+      }
+      .splash-bar::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        width: 42%;
+        border-radius: 4px;
+        background: #ffc629;
+        animation: splash-move 1.1s ease-in-out infinite;
+      }
+      .splash-slow { display: none; max-width: 28ch; }
+      .splash-is-slow .splash-slow { display: block; animation: splash-rise 400ms ease-out backwards; }
+      @keyframes splash-move {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(240%); }
+      }
+      @keyframes splash-drop {
+        0% { opacity: 0; transform: translateY(-110px) rotate(-14deg) scale(0.7); }
+        60% { opacity: 1; transform: translateY(8px) rotate(3deg) scale(1.04); }
+        80% { transform: translateY(-3px) rotate(-1deg) scale(1); }
+        100% { transform: none; }
+      }
+      @keyframes splash-drive {
+        to { background-position: -38px 0; }
+      }
+      @keyframes splash-digit {
+        0% { opacity: 0; transform: translateY(-34px); }
+        70% { opacity: 1; transform: translateY(4px); }
+        100% { transform: none; }
+      }
+      @keyframes splash-rise {
+        from { opacity: 0; transform: translateY(10px); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .splash-mark,
+        .splash-brand i,
+        .splash-brand span,
+        .splash-bar,
+        .splash-slow { animation: none !important; }
+        .splash-bar::before { width: 100%; animation: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <main class="splash" id="splash" role="status" aria-label="Yuklanmoqda">
+        <div class="splash-mark" aria-hidden="true"></div>
+        <div class="splash-brand">
+          <strong aria-label="1087"><i>1</i><i>0</i><i>8</i><i>7</i></strong>
+          <span>Taksi xizmati</span>
+        </div>
+        <div class="splash-bar" aria-hidden="true"></div>
+        <p class="splash-slow" style="margin: 0">Internet sekin ishlayapti, biroz kuting...</p>
+      </main>
+    </div>
+    <script>
+      // Ilova 6 soniyada ochilmasa, foydalanuvchi sabab bilan xabardor bo'ladi. React ekranni o'zi almashtiradi.
+      setTimeout(function () {
+        var splash = document.getElementById('splash');
+        if (splash) splash.className += ' splash-is-slow';
+      }, 6000);
+    </script>
+    <script>
+      // Telegram o'z yuklanish belgisini shu xabargacha ko'rsatadi; o'rniga bizning ekran chiqadi.
+      try {
+        if (window.TelegramWebviewProxy) window.TelegramWebviewProxy.postEvent('web_app_ready', '');
+      } catch (e) {}
+    </script>
+    <!-- async: telegram.org sekin bo'lsa ham ilova uni kutib o'tirmaydi -->
+    <script id="telegram-sdk" async src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
